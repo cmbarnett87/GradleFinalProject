@@ -1,0 +1,28 @@
+apply plugin: 'java'
+
+repositories{
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.11'
+}
+
+sourceCompatibility = 1.7
+
+/*
+I ran the test in Gradle :libjavajokescorey > Tasks > verification > test
+To add this Java class to my Android app:
+1) Add a reference in the settings.gradle file
+2) In app > build.gradle, add compile project dependency in the dependencies section
+3) Sync Gradle
+4) Use the import statement in your code and you're ready to go!
+
+*/
+
+
+
+
+
+
