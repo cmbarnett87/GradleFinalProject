@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,10 @@ import butterknife.OnClick;
 /**
  * A placeholder fragment containing a simple view.
  * Using http://jakewharton.github.io/butterknife/
+ * https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
  */
 public class MainActivityFragment extends Fragment {
+    final String LOG_TAG = "CMB";
     @Bind(R.id.btnTellJoke)
     Button btnTellJoke;
 
@@ -77,7 +80,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     @OnClick(R.id.btnTellAndroidJoke)
-    public void showAndroidJoke(){
+    public void showAndroidJoke() {
         AndroidJoke androidJoke = new AndroidJoke();
         Intent intent = new Intent(getContext(), com.example.cmbarnett.androidjokelib.MainActivity.class);
         intent.putExtra("joke", androidJoke.tellAndroidJoke());
@@ -86,23 +89,26 @@ public class MainActivityFragment extends Fragment {
 
     @OnClick(R.id.btnTellGCEJoke)
     public void showGCEJoke() {
+        btnTellGCEJoke.setEnabled(false);//disable to prevent multiple clicks
         new EndpointsAsyncTask().execute(new Pair<Context, String>(getContext(), "Manfred"));
     }
 
-//https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
+    //https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
     class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
         private MyApi myApiService = null;
         private Context context;
 
         @Override
         protected String doInBackground(Pair<Context, String>... params) {
-            if(myApiService == null) {  // Only do this once
+            if (myApiService == null) {  // Only do this once
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
                         // options for running against local devappserver
                         // - 10.0.2.2 is localhost's IP address in Android emulator
                         // - turn off compression when running against local devappserver
-                        .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                        //.setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                        //changed to localhost 11/28/15
+                        .setRootUrl("http://localhost:8080/_ah/api/")
                         .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                             @Override
                             public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
@@ -120,13 +126,15 @@ public class MainActivityFragment extends Fragment {
             try {
                 return myApiService.sayHi(name).execute().getData();
             } catch (IOException e) {
-                return e.getMessage();
+                Log.e(LOG_TAG,e.toString());
+                return String.format("It's not funny, there's an error: %s", e.getMessage());
             }
         }
 
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            btnTellGCEJoke.setEnabled(true);//disabled previously to prevent multiple clicks
         }
     }
 
