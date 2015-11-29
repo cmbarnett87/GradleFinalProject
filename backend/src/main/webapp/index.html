@@ -36,6 +36,27 @@
     -->
     <div class="alert alert-success" style="visibility: collapse;" id="outputAlert"></div>
 
+
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Tell Joke</h1>
+                <p>Press the button below to call your Google Cloud Endpoints API and tell a joke.</p>
+                <form>
+                    <div class="input-group2">
+                          <span class="input-group-btn">
+                             <button class="btn btn-default btn-primary btn-group btn-lg" type="submit" id="jokeButton">Tell Joke &raquo;</button>
+                          </span>
+                    </div>
+                </form>
+                <br/>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <!--
       A form that takes a text value and submits it to the Endpoint,
       access to the Endpoint is enabled once the client is loaded below.
@@ -71,6 +92,25 @@
       document.getElementById('helloButton').onclick = function() {
         var name = document.getElementById('nameInput').value;
         gapi.client.myApi.sayHi({'name': name}).execute(
+          function(response) {
+            var outputAlertDiv = document.getElementById('outputAlert');
+            outputAlertDiv.style.visibility = 'visible';
+
+            if (!response.error) {
+              outputAlertDiv.className = 'alert alert-success';
+              outputAlertDiv.innerHTML = '<h2>' + response.result.data + '</h2>';
+            }
+            else if (response.error) {
+              outputAlertDiv.className = 'alert alert-danger';
+              outputAlertDiv.innerHTML = '<b>Error Code: </b>' + response.error.code + ' [' + response.error.message + ']';
+            }
+          }
+        );
+        return false;
+      }
+
+      document.getElementById('jokeButton').onclick = function() {
+        gapi.client.myApi.tellJoke().execute(
           function(response) {
             var outputAlertDiv = document.getElementById('outputAlert');
             outputAlertDiv.style.visibility = 'visible';

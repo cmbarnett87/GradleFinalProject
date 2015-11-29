@@ -35,6 +35,7 @@ import butterknife.OnClick;
  * A placeholder fragment containing a simple view.
  * Using http://jakewharton.github.io/butterknife/
  * https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
+ * Some jokes courtesy of: http://www.hongkiat.com/blog/programming-jokes/
  */
 public class MainActivityFragment extends Fragment {
     final String LOG_TAG = "CMB";
@@ -90,7 +91,8 @@ public class MainActivityFragment extends Fragment {
     @OnClick(R.id.btnTellGCEJoke)
     public void showGCEJoke() {
         btnTellGCEJoke.setEnabled(false);//disable to prevent multiple clicks
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(getContext(), "Manfred"));
+        tvJoke.setText(null);
+        new EndpointsAsyncTask().execute(new Pair<Context, String>(getContext(), ""));
     }
 
     //https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
@@ -101,30 +103,32 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected String doInBackground(Pair<Context, String>... params) {
             if (myApiService == null) {  // Only do this once
-                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
+               /* For checking on an emulator
+               MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
                         // options for running against local devappserver
-                        // - 10.0.2.2 is localhost's IP address in Android emulator
+                        // - 10.0.2.2 is localhost's IP address in Android emulator (running on a real device will cause an error, which is correct)
                         // - turn off compression when running against local devappserver
-                        //.setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                        //changed to localhost 11/28/15
-                        .setRootUrl("http://localhost:8080/_ah/api/")
+                        .setRootUrl("http://10.0.2.2:8080/_ah/api/")
                         .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                             @Override
                             public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
                                 abstractGoogleClientRequest.setDisableGZipContent(true);
                             }
-                        });
-                // end options for devappserver
+                        });*/
 
+                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+                        .setRootUrl("https://coreyudacityjoke.appspot.com/_ah/api/");
                 myApiService = builder.build();
+                // end options for devappserver
             }
 
             context = params[0].first;
             String name = params[0].second;
 
             try {
-                return myApiService.sayHi(name).execute().getData();
+                //return myApiService.sayHi(name).execute().getData();
+                return myApiService.tellJoke().execute().getData();
             } catch (IOException e) {
                 Log.e(LOG_TAG,e.toString());
                 return String.format("It's not funny, there's an error: %s", e.getMessage());
@@ -134,6 +138,7 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            tvJoke.setText(result);
             btnTellGCEJoke.setEnabled(true);//disabled previously to prevent multiple clicks
         }
     }
