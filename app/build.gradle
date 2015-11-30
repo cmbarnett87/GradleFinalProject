@@ -30,6 +30,16 @@ android {
         }
     }
 
+    productFlavors{
+        //see Lesson 3: "Declaring Flavors" in the Udacity course'
+        free {
+            applicationId "com.udacity.gradle.builditbigger.free"
+        }
+        paid {
+            applicationId "com.udacity.gradle.builditbigger.paid"
+        }
+    }
+
     lintOptions {//for ButterKnife
         disable 'InvalidPackage'
     }

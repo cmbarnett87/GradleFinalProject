@@ -15,14 +15,16 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 //http://marksunghunpark.blogspot.ru/2015/05/how-to-test-asynctask-in-android.html
-
+//https://gist.github.com/he9lin/2195897
 public class ApplicationTest extends ApplicationTestCase<Application> {
     final String LOG_TAG = "CMB";
     //String mJsonString = null;
     String strJoke;
     Exception mError = null;
     CountDownLatch signal = null;
+    Boolean blCalled = null;
 
     public ApplicationTest() {
         super(Application.class);
@@ -30,6 +32,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     @Override
     protected void setUp() throws Exception {
+        blCalled = false;
         signal = new CountDownLatch(1);
     }
 
@@ -42,12 +45,10 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 
         assertNull(mError);
-        assertFalse(TextUtils.isEmpty(strJoke));
 
         new EndpointsAsyncTask().execute(new Pair<Context, String>(getContext(), ""));
-        signal.await();
-
-
+        signal.await(10, TimeUnit.SECONDS);
+        assertTrue(blCalled);
     }
 
     class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
@@ -74,8 +75,12 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            blCalled = true;
+            signal.countDown();//added 11/30/15
         }
+
+
     }
 }
 
