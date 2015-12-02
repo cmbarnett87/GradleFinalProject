@@ -17,8 +17,8 @@ import android.widget.Toast;
 import com.example.JavaJokesCorey;
 import com.example.cmbar.myapplication.backend.myApi.MyApi;
 import com.example.cmbarnett.androidjokelib.*;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+/*import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;*/
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
@@ -63,7 +63,7 @@ public class MainActivityFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, root);
 
-        if (BuildConfig.FLAVOR.equals("free")){
+       /* if (BuildConfig.FLAVOR.equals("free")){
             AdView mAdView = (AdView) root.findViewById(R.id.adView);
             // Create an ad request. Check logcat output for the hashed device ID to
             // get test ads on a physical device. e.g.
@@ -72,7 +72,7 @@ public class MainActivityFragment extends Fragment {
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .build();
             mAdView.loadAd(adRequest);
-        }
+        }*/
 
         return root;
     }

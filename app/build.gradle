@@ -30,7 +30,7 @@ android {
         }
     }
 
-    productFlavors{
+    productFlavors {
         //see Lesson 3: "Declaring Flavors" in the Udacity course'
         free {
             applicationId "com.udacity.gradle.builditbigger.free"
@@ -60,10 +60,12 @@ dependencies {
     // Added for AdMob
     compile project(':libjavajokescorey')
     compile project(':androidjokelib')
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.google.android.gms:play-services:8.3.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
     compile project(path: ':backend', configuration: 'android-endpoints')
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    freeCompile 'com.google.android.gms:play-services:8.3.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.android.support:support-v4:23.1.1'
 }
+
 
 
