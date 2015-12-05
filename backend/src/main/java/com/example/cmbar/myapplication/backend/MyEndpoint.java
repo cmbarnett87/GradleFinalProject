@@ -34,9 +34,9 @@ public class MyEndpoint {
     }
 
     @ApiMethod(name = "tellJoke")
-    public MyBean tellJoke() {
+    public MyBean tellJoke(@Named("joke") String joke) {
         MyBean response = new MyBean();
-        response.setData("Hide and seek champion since 1958:    ;");
+        response.setData(joke);
         return response;
     }
 

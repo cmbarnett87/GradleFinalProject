@@ -41,9 +41,10 @@
         <div class="row">
             <div class="col-lg-12">
                 <h1>Tell Joke</h1>
-                <p>Press the button below to call your Google Cloud Endpoints API and tell a joke.</p>
+                <p>Enter a joke and press the button below to call your Google Cloud Endpoints API and tell the joke.</p>
                 <form>
                     <div class="input-group2">
+                        <input type="text" class="form-control input-lg" placeholder="Joke" id="jokeInput" />
                           <span class="input-group-btn">
                              <button class="btn btn-default btn-primary btn-group btn-lg" type="submit" id="jokeButton">Tell Joke &raquo;</button>
                           </span>
@@ -110,7 +111,8 @@
       }
 
       document.getElementById('jokeButton').onclick = function() {
-        gapi.client.myApi.tellJoke().execute(
+        var joke = document.getElementById('jokeInput').value;
+        gapi.client.myApi.tellJoke({'joke': joke}).execute(
           function(response) {
             var outputAlertDiv = document.getElementById('outputAlert');
             outputAlertDiv.style.visibility = 'visible';

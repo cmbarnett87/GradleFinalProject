@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.JavaJokesCorey;
 import com.example.cmbar.myapplication.backend.myApi.MyApi;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -65,8 +66,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
             context = params[0].first;
 
             try {
+                JavaJokesCorey joke = new JavaJokesCorey();
                 //return myApiService.sayHi(name).execute().getData();
-                return myApiService.tellJoke().execute().getData();
+                return myApiService.tellJoke(joke.tellJavaJoke()).execute().getData();
             } catch (IOException e) {
                 Log.e(LOG_TAG, e.toString());
                 return String.format("It's not funny, there's an error: %s", e.getMessage());
@@ -76,6 +78,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         @Override
         protected void onPostExecute(String result) {
             //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            assertNotNull(result);
             blCalled = true;
             signal.countDown();//added 11/30/15
         }

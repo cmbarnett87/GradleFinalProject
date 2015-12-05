@@ -127,6 +127,7 @@ public class MainActivityFragment extends Fragment {
                             }
                         });*/
 
+
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                         .setRootUrl("https://coreyudacityjoke.appspot.com/_ah/api/");
                 myApiService = builder.build();
@@ -137,8 +138,9 @@ public class MainActivityFragment extends Fragment {
             String name = params[0].second;
 
             try {
+                JavaJokesCorey joke = new JavaJokesCorey();
                 //return myApiService.sayHi(name).execute().getData();
-                return myApiService.tellJoke().execute().getData();
+                return myApiService.tellJoke(joke.tellJavaJoke()).execute().getData();
             } catch (IOException e) {
                 Log.e(LOG_TAG,e.toString());
                 return String.format("It's not funny, there's an error: %s", e.getMessage());
