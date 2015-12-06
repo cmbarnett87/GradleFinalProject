@@ -102,7 +102,7 @@ public class MainActivityFragment extends Fragment {
 
     @OnClick(R.id.btnAppFlavor)
     public void showAppFlavor() {
-        Toast.makeText(getActivity(), String.format("App flavod: %s",BuildConfig.FLAVOR), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), String.format("App flavod: %s", BuildConfig.FLAVOR), Toast.LENGTH_SHORT).show();
     }
 
     //https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
@@ -137,20 +137,37 @@ public class MainActivityFragment extends Fragment {
             String name = params[0].second;
 
             try {
-                JavaJokesCorey joke = new JavaJokesCorey();
+                /*Note: I felt like the instructions for this project were a little vague. I see why having Android and Java libraries and being able to use them are important. I definitely
+                get why GCE is awesome and why I would use it in a future apps, but I think the instructions could have better spelled out the flow of the assignment. Something like:
+                1) Add a Java library that tells jokes. It should have a function that returns a joke (stored within the library itself).
+                2) Add an Android library that tells jokes. It should have a function that returns a joke (stored within the library itself).
+                3) Use GCE to get retrieve a joke. Your app will request a joke from the GCE and once received display it.
+                */
+
+                //JavaJokesCorey joke = new JavaJokesCorey();
                 //return myApiService.sayHi(name).execute().getData();
-                return myApiService.tellJoke(joke.tellJavaJoke()).execute().getData();
+                //return myApiService.tellJoke(joke.tellJavaJoke()).execute().getData();
+
+                return myApiService.getJoke().execute().getData();
             } catch (IOException e) {
-                Log.e(LOG_TAG,e.toString());
+                Log.e(LOG_TAG, e.toString());
                 return String.format("It's not funny, there's an error: %s", e.getMessage());
             }
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-            tvJoke.setText(result);
+            String strJoke;
+            //Result from GCE is passed to the AndroidJoke and displayed via toast
+            AndroidJoke joke = new AndroidJoke();
+            joke.setAndroidJoke(result);
+            strJoke = joke.tellAndroidJoke();
+
+
+            Toast.makeText(context, strJoke, Toast.LENGTH_LONG).show();
+            tvJoke.setText(strJoke);
             btnTellGCEJoke.setEnabled(true);//disabled previously to prevent multiple clicks
+
         }
     }
 
